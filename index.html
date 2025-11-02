@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treino de Vogais e Ditongos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .setup-screen, .exercise-screen, .report-screen {
+            display: none;
+        }
+
+        .setup-screen.active, .exercise-screen.active, .report-screen.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            margin: 20px auto;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: scale(1.05);
+        }
+
+        .exercise-header {
+            margin-bottom: 20px;
+        }
+
+        .student-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .student-name {
+            color: #667eea;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .progress {
+            background: #e0e0e0;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            transition: width 0.3s;
+            border-radius: 10px;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #666;
+            margin-top: 5px;
+            font-size: 1.1em;
+        }
+
+        .control-bar {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+        }
+
+        .control-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .control-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .control-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .control-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .control-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .mode-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .mode-tab {
+            flex: 1;
+            padding: 15px;
+            border: 3px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .mode-tab:hover {
+            background: #f0f0f0;
+        }
+
+        .mode-tab.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .question-area {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .letter-display {
+            font-size: 8em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .letter-display.machine {
+            font-family: Arial, sans-serif;
+        }
+
+        .letter-display.handwriting {
+            font-family: 'Comic Neue', cursive;
+        }
+
+        .audio-mode-icon {
+            font-size: 6em;
+            margin: 20px 0;
+        }
+
+        .play-sound-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            border-radius: 50px;
+            font-size: 1.5em;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .play-sound-btn:hover {
+            background: #218838;
+            transform: scale(1.1);
+        }
+
+        .answers-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .answer-btn {
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .answer-btn.machine {
+            font-family: Arial, sans-serif;
+        }
+
+        .answer-btn.handwriting {
+            font-family: 'Comic Neue', cursive;
+        }
+
+        .answer-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .answer-btn.correct {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .answer-btn.incorrect {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .navigation-bar {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-btn-prev {
+            background: #6c757d;
+            color: white;
+        }
+
+        .nav-btn-prev:hover:not(:disabled) {
+            background: #5a6268;
+            transform: scale(1.05);
+        }
+
+        .nav-btn-next {
+            background: #28a745;
+            color: white;
+        }
+
+        .nav-btn-next:hover:not(:disabled) {
+            background: #218838;
+            transform: scale(1.05);
+        }
+
+        .nav-btn-report {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .nav-btn-report:hover {
+            background: #138496;
+            transform: scale(1.05);
+        }
+
+        .nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .report-screen {
+            text-align: center;
+        }
+
+        .report-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .report-header h2 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            border: 3px solid #667eea;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        .motivation-message {
+            background: #fff3cd;
+            border: 3px solid #ffc107;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            font-size: 1.3em;
+            color: #856404;
+        }
+
+        .report-details {
+            text-align: left;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .report-details h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .answer-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .answer-item.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .answer-item.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .answer-item.unanswered {
+            background: #e2e3e5;
+            border-color: #6c757d;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .feedback-message {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .feedback-message.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .feedback-message.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .audio-error {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px;
+            color: #856404;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .answers-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .letter-display {
+                font-size: 5em;
+            }
+
+            .answer-btn {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 Treino de Vogais e Ditongos</h1>
+
+        <div class="setup-screen active" id="setupScreen">
+            <div class="input-group">
+                <label for="studentName">Nome do Aluno:</label>
+                <input type="text" id="studentName" placeholder="Escreve o teu nome aqui...">
+            </div>
+
+            <button class="btn" onclick="startExercise()">Começar Exercício</button>
+        </div>
+
+        <div class="exercise-screen" id="exerciseScreen">
+            <div class="exercise-header">
+                <div class="student-info">
+                    <div class="student-name">👤 <span id="displayStudentName"></span></div>
+                    <div class="progress-text" id="progressText">Pergunta 1 de 20</div>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+            </div>
+
+            <div class="mode-tabs">
+                <div class="mode-tab active" data-mode="visual" onclick="switchMode('visual')">
+                    👁️ Ver a Letra
+                </div>
+                <div class="mode-tab" data-mode="audio" onclick="switchMode('audio')">
+                    🔊 Ouvir o Som
+                </div>
+            </div>
+
+            <div class="control-bar">
+                <div class="control-row">
+                    <div class="control-group">
+                        <div class="control-label">Tipo de Letra:</div>
+                        <div class="control-buttons">
+                            <button class="control-btn active" onclick="changeLetterCase('upper')">MAIÚSCULAS</button>
+                            <button class="control-btn" onclick="changeLetterCase('lower')">minúsculas</button>
+                            <button class="control-btn" onclick="changeLetterCase('mixed')">Misto</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-row">
+                    <div class="control-group">
+                        <div class="control-label">Estilo de Fonte:</div>
+                        <div class="control-buttons">
+                            <button class="control-btn active" onclick="changeFontStyle('machine')">🖨️ Máquina</button>
+                            <button class="control-btn" onclick="changeFontStyle('handwriting')">✍️ Manuscrita</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="feedbackMessage" style="display: none;"></div>
+
+            <div class="question-area">
+                <div id="visualMode">
+                    <div class="letter-display" id="letterDisplay"></div>
+                </div>
+                <div id="audioMode" style="display: none;">
+                    <div class="audio-mode-icon">🔊</div>
+                    <p style="font-size: 1.5em; color: #666; margin: 20px 0;">Clica no botão para ouvir o som</p>
+                    <button class="play-sound-btn" onclick="playCurrentSound()">▶️ Ouvir Som</button>
+                </div>
+            </div>
+
+            <div class="answers-grid" id="answersGrid"></div>
+
+            <div class="navigation-bar">
+                <button class="nav-btn nav-btn-prev" onclick="previousQuestion()">◀️ Anterior</button>
+                <button class="nav-btn nav-btn-report" onclick="showReportFromExercise()">📊 Ver Relatório</button>
+                <button class="nav-btn nav-btn-next" onclick="nextQuestion()">Próximo ▶️</button>
+            </div>
+        </div>
+
+        <div class="report-screen" id="reportScreen">
+            <div class="report-header">
+                <h2 id="reportTitle">📊 Relatório</h2>
+                <p style="font-size: 1.2em; margin-top: 10px;" id="reportSubtitle"></p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="answeredCount">0</div>
+                    <div class="stat-label">✏️ Respondidas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="correctCount">0</div>
+                    <div class="stat-label">✅ Acertos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="incorrectCount">0</div>
+                    <div class="stat-label">❌ Erros</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="percentageScore">0%</div>
+                    <div class="stat-label">📊 Percentagem</div>
+                </div>
+            </div>
+
+            <div class="motivation-message" id="motivationMessage"></div>
+
+            <div class="report-details" id="reportDetails"></div>
+
+            <div class="btn-group">
+                <button class="btn btn-success" onclick="copyReport()">📋 Copiar Relatório</button>
+                <button class="btn btn-warning" onclick="backToExercise()" id="backToExerciseBtn">↩️ Voltar ao Exercício</button>
+                <button class="btn btn-secondary" onclick="restartExercise()">🔄 Novo Exercício</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ALL_ITEMS = ['A', 'E', 'I', 'O', 'U', 'AI', 'AU', 'EI', 'EU', 'OI', 'OU', 'AO', 'OE', 'UI', 'IU', 'AE'];
+        const TOTAL_QUESTIONS = 20;
+
+        let gameState = {
+            studentName: '',
+            mode: 'visual',
+            letterCase: 'upper',
+            fontStyle: 'machine',
+            currentQuestion: 0,
+            questions: [],
+            answers: [],
+            startTime: null,
+            audioCache: {}
+        };
+
+        function playAudioFile(letter) {
+            const fileName = letter.toLowerCase() + '.mp3';
+            
+            if (gameState.audioCache[letter]) {
+                gameState.audioCache[letter].currentTime = 0;
+                gameState.audioCache[letter].play().catch(err => {
+                    console.error('Erro ao reproduzir áudio:', err);
+                    showAudioError();
+                });
+            } else {
+                const audio = new Audio(fileName);
+                gameState.audioCache[letter] = audio;
+                
+                audio.play().catch(err => {
+                    console.error('Erro ao carregar áudio:', fileName, err);
+                    showAudioError();
+                });
+            }
+        }
+
+        function showAudioError() {
+            const audioMode = document.getElementById('audioMode');
+            const existingError = audioMode.querySelector('.audio-error');
+            if (!existingError) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'audio-error';
+                errorDiv.innerHTML = '⚠️ Não foi possível carregar o áudio. Certifica-te que os ficheiros MP3 estão na mesma pasta!';
+                audioMode.appendChild(errorDiv);
+            }
+        }
+
+        function playSuccessSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 523.25;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch(e) {
+                console.log('Som não disponível');
+            }
+        }
+
+        function playErrorSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 200;
+                oscillator.type = 'sawtooth';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } catch(e) {
+                console.log('Som não disponível');
+            }
+        }
+
+        function startExercise() {
+            const studentName = document.getElementById('studentName').value.trim();
+            if (!studentName) {
+                alert('Por favor, escreve o teu nome!');
+                return;
+            }
+
+            gameState.studentName = studentName;
+            gameState.mode = 'visual';
+            gameState.letterCase = 'upper';
+            gameState.fontStyle = 'machine';
+            gameState.currentQuestion = 0;
+            gameState.questions = [];
+            gameState.answers = [];
+            gameState.startTime = new Date();
+            gameState.audioCache = {};
+
+            for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+                const correctAnswer = ALL_ITEMS[Math.floor(Math.random() * ALL_ITEMS.length)];
+                const options = generateOptions(correctAnswer);
+                gameState.questions.push({ correctAnswer, options });
+                gameState.answers.push(null);
+            }
+
+            document.getElementById('setupScreen').classList.remove('active');
+            document.getElementById('exerciseScreen').classList.add('active');
+            document.getElementById('displayStudentName').textContent = studentName;
+
+            updateControlButtons();
+            showQuestion();
+        }
+
+        function generateOptions(correctAnswer) {
+            const options = [correctAnswer];
+            const available = ALL_ITEMS.filter(item => item !== correctAnswer);
+            
+            while (options.length < 4) {
+                const randomItem = available[Math.floor(Math.random() * available.length)];
+                if (!options.includes(randomItem)) {
+                    options.push(randomItem);
+                }
+            }
+            
+            return options.sort(() => Math.random() - 0.5);
+        }
+
+        function formatLetter(letter) {
+            if (gameState.letterCase === 'lower') {
+                return letter.toLowerCase();
+            } else if (gameState.letterCase === 'mixed') {
+                return Math.random() > 0.5 ? letter.toUpperCase() : letter.toLowerCase();
+            }
+            return letter.toUpperCase();
+        }
+
+        function showQuestion() {
+            hideFeedback();
+            const question = gameState.questions[gameState.currentQuestion];
+            const progress = ((gameState.currentQuestion) / TOTAL_QUESTIONS) * 100;
+            
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = 
+                `Pergunta ${gameState.currentQuestion + 1} de ${TOTAL_QUESTIONS}`;
+
+            if (gameState.mode === 'visual') {
+                document.getElementById('visualMode').style.display = 'block';
+                document.getElementById('audioMode').style.display = 'none';
+                
+                const letterDisplay = document.getElementById('letterDisplay');
+                letterDisplay.textContent = formatLetter(question.correctAnswer);
+                letterDisplay.className = `letter-display ${gameState.fontStyle}`;
+            } else {
+                document.getElementById('visualMode').style.display = 'none';
+                document.getElementById('audioMode').style.display = 'block';
+                
+                const audioMode = document.getElementById('audioMode');
+                const existingError = audioMode.querySelector('.audio-error');
+                if (existingError) {
+                    existingError.remove();
+                }
+                
+                setTimeout(() => playAudioFile(question.correctAnswer), 300);
+            }
+
+            renderAnswers();
+        }
+
+        function renderAnswers() {
+            const question = gameState.questions[gameState.currentQuestion];
+            const answersGrid = document.getElementById('answersGrid');
+            answersGrid.innerHTML = '';
+            
+            const currentAnswer = gameState.answers[gameState.currentQuestion];
+            
+            question.options.forEach(option => {
+                const btn = document.createElement('button');
+                btn.className = `answer-btn ${gameState.fontStyle}`;
+                btn.textContent = formatLetter(option);
+                btn.onclick = () => checkAnswer(option);
+                
+                if (currentAnswer) {
+                    if (option === currentAnswer.selected) {
+                        if (currentAnswer.isCorrect) {
+                            btn.classList.add('correct');
+                        } else {
+                            btn.classList.add('incorrect');
+                        }
+                    }
+                    if (option === question.correctAnswer) {
+                        btn.classList.add('correct');
+                    }
+                }
+                
+                answersGrid.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedAnswer) {
+            const question = gameState.questions[gameState.currentQuestion];
+            const isCorrect = selectedAnswer === question.correctAnswer;
+            
+            gameState.answers[gameState.currentQuestion] = {
+                selected: selectedAnswer,
+                isCorrect: isCorrect
+            };
+
+            if (isCorrect) {
+                playSuccessSound();
+                showFeedback('✅ Correto! Muito bem!', true);
+            } else {
+                playErrorSound();
+                showFeedback(`❌ Resposta errada. A resposta correta é: ${question.correctAnswer}`, false);
+            }
+
+            renderAnswers();
+
+            setTimeout(() => {
+                if (gameState.currentQuestion < TOTAL_QUESTIONS - 1) {
+                    gameState.currentQuestion++;
+                    showQuestion();
+                } else {
+                    showReport();
+                }
+            }, 2500);
+        }
+
+        function showFeedback(message, isCorrect) {
+            const feedbackDiv = document.getElementById('feedbackMessage');
+            feedbackDiv.textContent = message;
+            feedbackDiv.className = `feedback-message ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedbackDiv.style.display = 'block';
+        }
+
+        function hideFeedback() {
+            document.getElementById('feedbackMessage').style.display = 'none';
+        }
+
+        function playCurrentSound() {
+            const question = gameState.questions[gameState.currentQuestion];
+            playAudioFile(question.correctAnswer);
+        }
+
+        function switchMode(mode) {
+            gameState.mode = mode;
+            
+            document.querySelectorAll('.mode-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.mode === mode) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            showQuestion();
+        }
+
+        function changeLetterCase(letterCase) {
+            gameState.letterCase = letterCase;
+            updateControlButtons();
+            showQuestion();
+        }
+
+        function changeFontStyle(fontStyle) {
+            gameState.fontStyle = fontStyle;
+            updateControlButtons();
+            showQuestion();
+        }
+
+        function updateControlButtons() {
+            document.querySelectorAll('.control-buttons button').forEach(btn => {
+                const text = btn.textContent.toLowerCase();
+                if ((gameState.letterCase === 'upper' && text.includes('maiúsculas')) ||
+                    (gameState.letterCase === 'lower' && text.includes('minúsculas')) ||
+                    (gameState.letterCase === 'mixed' && text.includes('misto')) ||
+                    (gameState.fontStyle === 'machine' && text.includes('máquina')) ||
+                    (gameState.fontStyle === 'handwriting' && text.includes('manuscrita'))) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        function previousQuestion() {
+            if (gameState.currentQuestion > 0) {
+                gameState.currentQuestion--;
+                showQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (gameState.currentQuestion < TOTAL_QUESTIONS - 1) {
+                gameState.currentQuestion++;
+                showQuestion();
+            }
+        }
+
+        function showReportFromExercise() {
+            showReport();
+        }
+
+        function backToExercise() {
+            document.getElementById('reportScreen').classList.remove('active');
+            document.getElementById('exerciseScreen').classList.add('active');
+        }
+
+        function showReport() {
+            document.getElementById('exerciseScreen').classList.remove('active');
+            document.getElementById('reportScreen').classList.add('active');
+
+            const answeredQuestions = gameState.answers.filter(a => a !== null);
+            const correctAnswers = answeredQuestions.filter(a => a.isCorrect).length;
+            const incorrectAnswers = answeredQuestions.filter(a => !a.isCorrect).length;
+            const percentage = answeredQuestions.length > 0 
+                ? Math.round((correctAnswers / answeredQuestions.length) * 100) 
+                : 0;
+
+            if (answeredQuestions.length < TOTAL_QUESTIONS) {
+                document.getElementById('reportTitle').textContent = '📊 Relatório Parcial';
+                document.getElementById('reportSubtitle').textContent = 
+                    `Respondeste a ${answeredQuestions.length} de ${TOTAL_QUESTIONS} perguntas`;
+                document.getElementById('backToExerciseBtn').style.display = 'inline-block';
+            } else {
+                document.getElementById('reportTitle').textContent = '🎉 Parabéns!';
+                document.getElementById('reportSubtitle').textContent = 'Terminaste o exercício!';
+                document.getElementById('backToExerciseBtn').style.display = 'none';
+            }
+
+            document.getElementById('answeredCount').textContent = answeredQuestions.length;
+            document.getElementById('correctCount').textContent = correctAnswers;
+            document.getElementById('incorrectCount').textContent = incorrectAnswers;
+            document.getElementById('percentageScore').textContent = percentage + '%';
+
+            let message = '';
+            if (answeredQuestions.length === 0) {
+                message = '💡 Ainda não respondeste a nenhuma pergunta. Vamos começar!';
+            } else if (percentage === 100) {
+                message = '🌟 Perfeito! És um génio das vogais e ditongos! 🌟';
+            } else if (percentage >= 80) {
+                message = '👏 Muito bem! Estás a fazer um excelente trabalho! 👏';
+            } else if (percentage >= 60) {
+                message = '😊 Bom trabalho! Continua a praticar e vais melhorar ainda mais! 😊';
+            } else {
+                message = '💪 Não desanimes! Com prática, vais conseguir! Tenta outra vez! 💪';
+            }
+            document.getElementById('motivationMessage').textContent = message;
+
+            const detailsDiv = document.getElementById('reportDetails');
+            detailsDiv.innerHTML = '<h3>📝 Detalhe das Respostas:</h3>';
+            
+            gameState.answers.forEach((answer, index) => {
+                const question = gameState.questions[index];
+                const item = document.createElement('div');
+                
+                if (answer === null) {
+                    item.className = 'answer-item unanswered';
+                    item.innerHTML = `
+                        <strong>Pergunta ${index + 1}:</strong> 
+                        ⏳ Não respondida | 
+                        Correto: <strong>${question.correctAnswer}</strong>
+                    `;
+                } else {
+                    item.className = `answer-item ${answer.isCorrect ? 'correct' : 'incorrect'}`;
+                    item.innerHTML = `
+                        <strong>Pergunta ${index + 1}:</strong> 
+                        ${answer.isCorrect ? '✅' : '❌'} 
+                        Correto: <strong>${question.correctAnswer}</strong> | 
+                        Resposta: <strong>${answer.selected}</strong>
+                    `;
+                }
+                detailsDiv.appendChild(item);
+            });
+        }
+
+        function copyReport() {
+            const endTime = new Date();
+            const duration = Math.round((endTime - gameState.startTime) / 1000);
+            const minutes = Math.floor(duration / 60);
+            const seconds = duration % 60;
+
+            const answeredQuestions = gameState.answers.filter(a => a !== null);
+            const correctAnswers = answeredQuestions.filter(a => a.isCorrect).length;
+            const incorrectAnswers = answeredQuestions.filter(a => !a.isCorrect).length;
+            const percentage = answeredQuestions.length > 0 
+                ? Math.round((correctAnswers / answeredQuestions.length) * 100) 
+                : 0;
+
+            let report = `=== RELATÓRIO DE TREINO DE VOGAIS E DITONGOS ===\n\n`;
+            report += `Aluno: ${gameState.studentName}\n`;
+            report += `Data: ${endTime.toLocaleDateString('pt-PT')}\n`;
+            report += `Hora: ${endTime.toLocaleTimeString('pt-PT')}\n`;
+            report += `Duração: ${minutes}m ${seconds}s\n`;
+            report += `\n--- RESULTADOS ---\n`;
+            report += `Total de Perguntas: ${TOTAL_QUESTIONS}\n`;
+            report += `Perguntas Respondidas: ${answeredQuestions.length}\n`;
+            report += `Acertos: ${correctAnswers}\n`;
+            report += `Erros: ${incorrectAnswers}\n`;
+            report += `Percentagem de Sucesso: ${percentage}%\n`;
+            report += `\n--- DETALHE DAS RESPOSTAS ---\n`;
+            
+            gameState.answers.forEach((answer, index) => {
+                const question = gameState.questions[index];
+                if (answer === null) {
+                    report += `Pergunta ${index + 1}: ⏳ NÃO RESPONDIDA - Correto: ${question.correctAnswer}\n`;
+                } else {
+                    report += `Pergunta ${index + 1}: ${answer.isCorrect ? '✅ CORRETO' : '❌ ERRADO'} - `;
+                    report += `Esperado: ${question.correctAnswer} | Respondeu: ${answer.selected}\n`;
+                }
+            });
+
+            navigator.clipboard.writeText(report).then(() => {
+                alert('✅ Relatório copiado para a área de transferência!');
+            }).catch(() => {
+                alert('❌ Erro ao copiar o relatório. Tenta novamente.');
+            });
+        }
+
+        function restartExercise() {
+            document.getElementById('reportScreen').classList.remove('active');
+            document.getElementById('setupScreen').classList.add('active');
+            document.getElementById('studentName').value = gameState.studentName;
+        }
+    </script>
+</body>
+</html>
