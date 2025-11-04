@@ -4,8 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Treino de Vogais e Ditongos</title>
-    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Preload da fonte personalizada -->
+    <link rel="preload" href="Primeiro_Ciclo.ttf" as="font" type="font/ttf" crossorigin>
     <style>
+        /* FONTE PERSONALIZADA - Primeiro Ciclo */
+        @font-face {
+            font-family: 'Primeiro Ciclo';
+            src: local('Primeiro Ciclo'),
+                 url('Primeiro_Ciclo.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: block;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -234,17 +245,10 @@
 
         .letter-display {
             font-size: 8em;
-            font-weight: bold;
+            font-weight: 400;
             color: #667eea;
             margin: 20px 0;
-        }
-
-        .letter-display.machine {
-            font-family: Arial, sans-serif;
-        }
-
-        .letter-display.handwriting {
-            font-family: 'Comic Neue', cursive;
+            font-family: 'Primeiro Ciclo', sans-serif;
         }
 
         .audio-mode-icon {
@@ -282,18 +286,11 @@
             border-radius: 15px;
             padding: 20px;
             font-size: 2em;
-            font-weight: bold;
+            font-weight: 400;
             color: #667eea;
             cursor: pointer;
             transition: all 0.3s;
-        }
-
-        .answer-btn.machine {
-            font-family: Arial, sans-serif;
-        }
-
-        .answer-btn.handwriting {
-            font-family: 'Comic Neue', cursive;
+            font-family: 'Primeiro Ciclo', sans-serif;
         }
 
         .answer-btn:hover {
@@ -586,15 +583,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="control-row">
-                    <div class="control-group">
-                        <div class="control-label">Estilo de Fonte:</div>
-                        <div class="control-buttons">
-                            <button class="control-btn active" onclick="changeFontStyle('machine')">🖨️ Máquina</button>
-                            <button class="control-btn" onclick="changeFontStyle('handwriting')">✍️ Manuscrita</button>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div id="feedbackMessage" style="display: none;"></div>
@@ -657,6 +645,17 @@
     </div>
 
     <script>
+        // Verificar se a fonte carregou corretamente
+        document.fonts.ready.then(function() {
+            const fonts = Array.from(document.fonts.values());
+            const primeiroCiclo = fonts.find(f => f.family === 'Primeiro Ciclo');
+            if (primeiroCiclo) {
+                console.log('✅ Fonte Primeiro Ciclo carregada com sucesso!');
+            } else {
+                console.warn('⚠️ Fonte Primeiro Ciclo NÃO foi carregada. Verifica se o ficheiro está na mesma pasta.');
+            }
+        });
+
         const ALL_ITEMS = ['A', 'E', 'I', 'O', 'U', 'AI', 'AU', 'EI', 'EU', 'OI', 'OU', 'AO', 'OE', 'UI', 'IU', 'AE'];
         const TOTAL_QUESTIONS = 20;
 
@@ -664,7 +663,6 @@
             studentName: '',
             mode: 'visual',
             letterCase: 'upper',
-            fontStyle: 'machine',
             currentQuestion: 0,
             questions: [],
             answers: [],
@@ -757,7 +755,6 @@
             gameState.studentName = studentName;
             gameState.mode = 'visual';
             gameState.letterCase = 'upper';
-            gameState.fontStyle = 'machine';
             gameState.currentQuestion = 0;
             gameState.questions = [];
             gameState.answers = [];
@@ -817,7 +814,7 @@
                 
                 const letterDisplay = document.getElementById('letterDisplay');
                 letterDisplay.textContent = formatLetter(question.correctAnswer);
-                letterDisplay.className = `letter-display ${gameState.fontStyle}`;
+                letterDisplay.className = 'letter-display';
             } else {
                 document.getElementById('visualMode').style.display = 'none';
                 document.getElementById('audioMode').style.display = 'block';
@@ -843,7 +840,7 @@
             
             question.options.forEach(option => {
                 const btn = document.createElement('button');
-                btn.className = `answer-btn ${gameState.fontStyle}`;
+                btn.className = 'answer-btn';
                 btn.textContent = formatLetter(option);
                 btn.onclick = () => checkAnswer(option);
                 
@@ -928,20 +925,12 @@
             showQuestion();
         }
 
-        function changeFontStyle(fontStyle) {
-            gameState.fontStyle = fontStyle;
-            updateControlButtons();
-            showQuestion();
-        }
-
         function updateControlButtons() {
             document.querySelectorAll('.control-buttons button').forEach(btn => {
                 const text = btn.textContent.toLowerCase();
                 if ((gameState.letterCase === 'upper' && text.includes('maiúsculas')) ||
                     (gameState.letterCase === 'lower' && text.includes('minúsculas')) ||
-                    (gameState.letterCase === 'mixed' && text.includes('misto')) ||
-                    (gameState.fontStyle === 'machine' && text.includes('máquina')) ||
-                    (gameState.fontStyle === 'handwriting' && text.includes('manuscrita'))) {
+                    (gameState.letterCase === 'mixed' && text.includes('misto'))) {
                     btn.classList.add('active');
                 } else {
                     btn.classList.remove('active');
